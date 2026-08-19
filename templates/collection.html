@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}{{ data.name }} &middot; Linker{% endblock %}
+{% block content %}
+<section class="collection-head">
+  <div>
+    <a class="backlink" href="{{ url_for('index') }}">&larr; All collections</a>
+    <h1>{{ data.name }}</h1>
+    <p class="muted">
+      {{ data.links|length }} link{{ '' if data.links|length == 1 else 's' }}
+      &middot; unlocked &middot; auto-locks after 30 minutes idle
+    </p>
+  </div>
+  <form method="post" action="{{ url_for('lock', slug=slug) }}">
+    <button class="btn ghost" type="submit">&#128274; Lock now</button>
+  </form>
+</section>
+
+<div class="columns">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Links</h2>
+      <form method="get" class="searchbar">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search links..." autocomplete="off">
+      </form>
+    </div>
+
+    {% if links %}
+      <ul class="links">
+        {% for link in links %}
+          <li class="link" id="link-{{ link.id }}">
+            <div class="link-main">
+              <a class="link-name" href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.name }}</a>
+              <span class="link-host">{{ link.url|host }}</span>
+              {% if link.note %}<p class="link-note">{{ link.note }}</p>{% endif %}
+              <span class="link-url">{{ link.url }}</span>
+            </div>
+            <div class="link-actions">
+              <details class="inline-edit">
+                <summary class="btn ghost tiny">Edit</summary>
+                <form method="post" action="{{ url_for('edit_link', slug=slug, link_id=link.id) }}" class="stack tight">
+                  <input type="text" name="name" value="{{ link.name }}" required>
+                  <input type="text" name="url" value="{{ link.url }}" required>
+                  <input type="text" name="note" value="{{ link.note }}" placeholder="Note (optional)">
+                  <button class="btn primary tiny" type="submit">Save</button>
+                </form>
+              </details>
+              <form method="post" action="{{ url_for('delete_link', slug=slug, link_id=link.id) }}"
+                    onsubmit="return confirm('Delete this link?')">
+                <button class="btn danger tiny" type="submit">Delete</button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% elif query %}
+      <p class="empty">Nothing matches &ldquo;{{ query }}&rdquo;.
+        <a href="{{ url_for('collection', slug=slug) }}">Clear search</a></p>
+    {% else %}
+      <p class="empty">No links yet. Add one on the right.</p>
+    {% endif %}
+  </section>
+
+  <div class="side">
+    <section class="panel">
+      <h2>Add a link</h2>
+      <form method="post" action="{{ url_for('add_link', slug=slug) }}" class="stack">
+        <label>
+          Link name
+          <input type="text" name="name" placeholder="Anthropic docs" required autocomplete="off">
+        </label>
+        <label>
+          Address
+          <input type="text" name="url" placeholder="docs.anthropic.com" required autocomplete="off">
+        </label>
+        <label>
+          Note <span class="opt">optional</span>
+          <input type="text" name="note" placeholder="Why this matters" autocomplete="off">
+        </label>
+        <button class="btn primary" type="submit">Save to collection</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <details>
+        <summary class="panel-summary">Change password</summary>
+        <form method="post" action="{{ url_for('change_password', slug=slug) }}" class="stack tight">
+          <input type="password" name="current" placeholder="Current password" required autocomplete="current-password">
+          <input type="password" name="new" placeholder="New password" required minlength="8" autocomplete="new-password">
+          <input type="password" name="confirm" placeholder="Confirm new password" required minlength="8" autocomplete="new-password">
+          <button class="btn" type="submit">Re-encrypt with new password</button>
+        </form>
+      </details>
+      <details>
+        <summary class="panel-summary danger-text">Delete collection</summary>
+        <form method="post" action="{{ url_for('delete_collection', slug=slug) }}" class="stack tight"
+              onsubmit="return confirm('Permanently delete this collection and every link in it?')">
+          <input type="password" name="password" placeholder="Password to confirm" required autocomplete="current-password">
+          <button class="btn danger" type="submit">Delete permanently</button>
+        </form>
+      </details>
+    </section>
+  </div>
+</div>
+{% endblock %}

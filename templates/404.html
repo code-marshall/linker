@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Not found{% endblock %}
+{% block content %}
+<section class="panel narrow unlock">
+  <div class="big-lock">&#129300;</div>
+  <h1>Nothing here</h1>
+  <p class="muted">That collection or link does not exist.</p>
+  <a class="backlink" href="{{ url_for('index') }}">&larr; All collections</a>
+</section>
+{% endblock %}

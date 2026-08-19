@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Locked &middot; {{ slug }}{% endblock %}
+{% block content %}
+<section class="panel narrow unlock">
+  <div class="big-lock">&#128274;</div>
+  <h1>{{ slug }}</h1>
+  <p class="muted">This collection is encrypted. Enter its password to read it.</p>
+  <form method="post" action="{{ url_for('unlock', slug=slug) }}" class="stack">
+    <label>
+      Password
+      <input type="password" name="password" required autofocus autocomplete="current-password">
+    </label>
+    <button class="btn primary" type="submit">Unlock</button>
+  </form>
+  <a class="backlink" href="{{ url_for('index') }}">&larr; All collections</a>
+</section>
+{% endblock %}

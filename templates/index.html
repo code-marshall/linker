@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Your link vaults</h1>
+  <p>Each collection is a single encrypted file. Names, addresses and notes are
+     only readable once you type the password that made it.</p>
+</section>
+
+<div class="columns">
+  <section class="panel">
+    <h2>Collections</h2>
+    {% if collections %}
+      <ul class="collection-list">
+        {% for c in collections %}
+          <li>
+            <a class="collection" href="{{ url_for('collection', slug=c.slug) }}">
+              <span class="lock-icon">{{ '🔓' if c.slug in unlocked else '🔒' }}</span>
+              <span class="collection-body">
+                <span class="collection-name">{{ c.slug }}</span>
+                <span class="collection-meta">
+                  {{ c.size }} bytes encrypted &middot;
+                  updated {{ c.modified.strftime('%d %b %Y, %H:%M') }} UTC
+                </span>
+              </span>
+              <span class="chev">&rsaquo;</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty">No collections yet. Create your first one &rarr;</p>
+    {% endif %}
+  </section>
+
+  <section class="panel">
+    <h2>New collection</h2>
+    <form method="post" action="{{ url_for('create') }}" class="stack">
+      <label>
+        Name
+        <input type="text" name="name" placeholder="Research bookmarks" required autocomplete="off">
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password">
+      </label>
+      <label>
+        Confirm password
+        <input type="password" name="confirm" required minlength="8" autocomplete="new-password">
+      </label>
+      <button class="btn primary" type="submit">Create encrypted collection</button>
+      <p class="hint">There is no password reset. The password is the only key.</p>
+    </form>
+  </section>
+</div>
+{% endblock %}

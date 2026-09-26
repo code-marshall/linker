@@ -12,7 +12,7 @@ password. Link names, addresses and notes only exist as ciphertext on disk.
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python app.py          # http://127.0.0.1:5000  (PORT=8080 to change)
+.venv/bin/python app.py          # http://127.0.0.1:5001  (PORT=8080 to change)
 ```
 
 ## Use

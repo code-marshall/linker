@@ -310,7 +310,7 @@ def lan_ip():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", "5000"))
+    port = int(os.environ.get("PORT", "5001"))
     host = os.environ.get("HOST", "0.0.0.0")
     print(f" * Local:   http://127.0.0.1:{port}")
     if host == "0.0.0.0":

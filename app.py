@@ -7,6 +7,7 @@ an unlocked session, and never written to disk or into a cookie.
 
 import os
 import secrets
+import socket
 import time
 import uuid
 from urllib.parse import urlparse
@@ -298,7 +299,20 @@ def not_found(_exc):
     return render_template("404.html"), 404
 
 
+def lan_ip():
+    """Best guess at this machine's LAN address; no packets are actually sent."""
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        try:
+            s.connect(("10.255.255.255", 1))
+            return s.getsockname()[0]
+        except OSError:
+            return "127.0.0.1"
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", "5000"))
     host = os.environ.get("HOST", "0.0.0.0")
+    print(f" * Local:   http://127.0.0.1:{port}")
+    if host == "0.0.0.0":
+        print(f" * Network: http://{lan_ip()}:{port}")
     app.run(host=host, port=port, debug=False)

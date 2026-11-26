@@ -1,7 +1,6 @@
 .venv/
 __pycache__/
 *.pyc
-collections/*.enc
 .secret_key
 .idea/
 .idea/
